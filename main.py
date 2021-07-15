@@ -185,6 +185,7 @@ class CowinApi:
     def book_session(self, session, beneficiaries, reqs: Requirements):
         data = {
             "dose": reqs.dose_seq,
+            "center_id": session["center_id"],
             "session_id": session["session_id"],
             "slot": session["slots"][0],
             "beneficiaries": [ben["beneficiary_reference_id"] for ben in beneficiaries],
@@ -260,7 +261,6 @@ def booking_loop():
                 # TODO: better formatting
                 msg = f"*Found*\\!\n```json\n{json.dumps(candidates[0], indent=4)}\n```"
                 telegram.send_message(msg)
-                # TODO: Is captcha needed?
                 # TODO: Add way for user to validate the candidate before booking
                 # resp = api.book_session(candidates[0], beneficiaries, reqs)
                 # logging.info("booking successful")
