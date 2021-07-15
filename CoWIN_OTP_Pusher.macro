@@ -1,0 +1,116 @@
+{
+	"localVariables": [
+		{
+			"isLocal": true,
+			"m_booleanValue": false,
+			"m_decimalValue": 0.0,
+			"m_intValue": 0,
+			"m_name": "endpoint",
+			"m_stringValue": "https://example.org/cowinOtp",
+			"m_type": 2
+		},
+		{
+			"isLocal": true,
+			"m_booleanValue": false,
+			"m_decimalValue": 0.0,
+			"m_intValue": 0,
+			"m_name": "response",
+			"m_stringValue": "",
+			"m_type": 2
+		},
+		{
+			"isLocal": true,
+			"m_booleanValue": false,
+			"m_decimalValue": 0.0,
+			"m_intValue": 0,
+			"m_name": "authKey",
+			"m_stringValue": "my_secret_password",
+			"m_type": 2
+		}
+	],
+	"m_GUID": -8413213145270763097,
+	"m_actionList": [
+		{
+			"blockNextAction": true,
+			"m_nonRoot": true,
+			"m_script": "curl -d \u0027{\"msgBody\": \"[notification]\", \"authKey\": \"[lv\u003dauthKey]\"}\u0027 --silent -H \"Content-Type: application/json\" -X POST [lv\u003dendpoint]",
+			"m_variableToSaveResponse": {
+				"isLocal": true,
+				"m_booleanValue": false,
+				"m_decimalValue": 0.0,
+				"m_intValue": 0,
+				"m_name": "response",
+				"m_stringValue": "",
+				"m_type": 2
+			},
+			"timeoutSeconds": 300,
+			"m_SIGUID": -8338934980600033160,
+			"m_classType": "ShellScriptAction",
+			"m_constraintList": [],
+			"m_isDisabled": false,
+			"m_isOrCondition": false
+		},
+		{
+			"m_logDateAndTime": true,
+			"m_logText": "[notification]\\n[lv\u003dresponse]",
+			"m_SIGUID": -7685783759753096935,
+			"m_classType": "LogAction",
+			"m_constraintList": [],
+			"m_isDisabled": false,
+			"m_isOrCondition": false
+		},
+		{
+			"enableRegex": false,
+			"m_ageInSeconds": 0,
+			"m_applicationNameList": [
+				"Messages"
+			],
+			"m_clearPersistent": false,
+			"m_excludes": false,
+			"m_matchOption": 2,
+			"m_matchText": "otp",
+			"m_option": 1,
+			"m_packageNameList": [
+				"com.google.android.apps.messaging"
+			],
+			"m_SIGUID": -8039223456614806056,
+			"m_classType": "ClearNotificationsAction",
+			"m_constraintList": [],
+			"m_isDisabled": false,
+			"m_isOrCondition": false
+		}
+	],
+	"m_category": "Uncategorized",
+	"m_constraintList": [],
+	"m_description": "Sends the OTP message from CoWIN to user specified web server. Remember to set: 1) Server endpoint URL, 2) authKey, 3) SMS App(s) in trigger and actions",
+	"m_descriptionOpen": true,
+	"m_enabled": true,
+	"m_excludeLog": false,
+	"m_headingColor": 0,
+	"m_isOrCondition": false,
+	"m_name": "CoWIN OTP Pusher",
+	"m_triggerList": [
+		{
+			"enableRegex": false,
+			"m_applicationNameList": [
+				"Messages"
+			],
+			"m_exactMatch": false,
+			"m_excludeApps": false,
+			"m_excludes": false,
+			"m_ignoreOngoing": true,
+			"m_option": 0,
+			"m_packageNameList": [
+				"com.google.android.apps.messaging"
+			],
+			"m_soundOption": 0,
+			"m_supressMultiples": true,
+			"m_textContent": "CoWIN",
+			"m_SIGUID": -6981377257257555056,
+			"m_classType": "NotificationTrigger",
+			"m_constraintList": [],
+			"m_isDisabled": false,
+			"m_isOrCondition": false
+		}
+	]
+}
