@@ -96,7 +96,7 @@ class CowinAuth:
 
 @dataclass
 class Requirements:
-    vaccine_type: Literal["ANY", "COVISHIELD", "COVAXIN", "SPUTNIK"] = "ANY"
+    vaccine_type: Literal["ANY", "COVISHIELD", "COVAXIN", "SPUTNIK V"] = "ANY"
     min_age: Literal[18, 45] = 18
     dose_seq: Literal[1, 2] = 1
     fee_type: Literal["ANY", "Free", "Paid"] = "ANY"
