@@ -41,11 +41,8 @@ def handleOtpMsg():
 
 
 def run_app():
-    if DEBUG:
-        app.run(host="0.0.0.0", port=5000, debug=True)
-    else:
-        http_server = WSGIServer(('localhost', 5000), app)
-        http_server.serve_forever()
+    http_server = WSGIServer(('localhost', 5000), app)
+    http_server.serve_forever()
 
 
 if __name__ == "__main__":
