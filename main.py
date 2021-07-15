@@ -1,4 +1,5 @@
 import hashlib
+import json
 import queue
 import threading
 import time
@@ -13,6 +14,7 @@ import requests
 
 from __init__ import DEBUG, config, logging
 from server import otp_queue, run_app
+import telegram
 
 SECRET = config["auth"]["secret"]
 BASE_URL = "https://cdn-api.co-vin.in/api/v2"
@@ -251,6 +253,9 @@ def booking_loop():
             # TODO: Create a Session dataclass for better type checking
             if candidates := sort_sessions(sessions, reqs):
                 logging.info("found candidate!", candidates[0])
+                # TODO: better formatting
+                msg = f"*Found*\\!\n```json\n{json.dumps(candidates[0], indent=4)}\n```"
+                telegram.send_message(msg)
                 # TODO: Is captcha needed?
                 # TODO: Add way for user to validate the candidate before booking
                 # resp = api.book_session(candidates[0], beneficiaries, reqs)
