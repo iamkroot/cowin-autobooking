@@ -16,8 +16,7 @@ from server import otp_queue, run_app
 
 SECRET = config["auth"]["secret"]
 BASE_URL = "https://cdn-api.co-vin.in/api/v2"
-HEADERS = {'User-Agent': ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit' +
-                          '/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36')}
+HEADERS = {'User-Agent': ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1)')}
 MAX_ERROR_RETRY = 5
 
 
@@ -43,7 +42,10 @@ class CowinAuth:
 
     def __init__(self, mobile: str):
         self.mobile = mobile
-        if self.TOKEN_PATH.exists() and time.time() - self.TOKEN_PATH.stat().st_atime < 3600:
+        if (
+            self.TOKEN_PATH.exists()
+            and time.time() - self.TOKEN_PATH.stat().st_atime < 3600
+        ):
             logging.info("Reading saved token from file")
             self.token = self.TOKEN_PATH.read_text()
         else:
