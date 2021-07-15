@@ -4,3 +4,5 @@ config.toml
 *.log
 api_token.txt
 playground.ipynb
+*.sublime-project
+*.sublime-workspace
