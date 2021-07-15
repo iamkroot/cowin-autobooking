@@ -46,8 +46,9 @@ class CowinAuth:
         self.mobile = mobile
         if (
             self.TOKEN_PATH.exists()
-            and time.time() - self.TOKEN_PATH.stat().st_atime < 3600
+            and time.time() - self.TOKEN_PATH.stat().st_atime < 900
         ):
+            # if token was saved within last 15 minutes, it might be valid
             logging.info("Reading saved token from file")
             self.token = self.TOKEN_PATH.read_text()
         else:
@@ -267,6 +268,8 @@ def booking_loop():
                 logging.info("Nothing good")
         else:
             logging.info("No availble")
+        # TODO: Adaptive sleep: If we know some fixed times when slots open,
+        #       increase polling rate around those times
         time.sleep(10)
 
 
