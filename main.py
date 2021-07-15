@@ -16,6 +16,10 @@ from __init__ import DEBUG, config, logging  # FIXME: Really ugly. Package it pr
 from server import otp_queue, run_app  # TODO: Don't let server create otp_queue
 import telegram
 
+URLLIB_LOG_LEVEL = logging.TRACE if DEBUG else logging.WARNING
+logging.getLogger("urllib3").setLevel(URLLIB_LOG_LEVEL)
+logging.getLogger("urllib3.connectionpool").setLevel(URLLIB_LOG_LEVEL)
+
 SECRET = config["auth"]["secret"]
 BASE_URL = "https://cdn-api.co-vin.in/api/v2"
 HEADERS = {'User-Agent': ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1)')}
@@ -264,12 +268,11 @@ def booking_loop():
                 break
             else:
                 logging.trace(sessions)
-                logging.info("Nothing good")
-        else:
-            logging.info("No availble")
-        # TODO: Adaptive sleep: If we know some fixed times when slots open,
+                logging.info("No sessions meeting requirements.")
+        # TODO: Dynamic sleep: If we know some fixed times when slots open,
         #       increase polling rate around those times
         time.sleep(10)
+        # TODO: Change booking date when day ends
 
 
 def main():
