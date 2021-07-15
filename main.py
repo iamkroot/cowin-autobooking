@@ -251,15 +251,17 @@ def booking_loop():
     api = CowinApi(auth)
     pincode = config["booking"]["pincode"]
     book_date = get_booking_date()
+    # TODO: Allow user to select subset of beneficiaries
     beneficiaries = api.get_beneficiaries()
     while True:
         sess_data = api.get_sessions_by_pincode(pincode, book_date)
         if sessions := sess_data["sessions"]:
             # TODO: Create a Session dataclass for better type checking
             if candidates := sort_sessions(sessions, reqs):
-                logging.info("found candidate!", candidates[0])
+                candidate_str = json.dumps(candidates[0], indent=4)
+                logging.info(f"Found candidate! {candidate_str}")
                 # TODO: better formatting
-                msg = f"*Found*\\!\n```json\n{json.dumps(candidates[0], indent=4)}\n```"
+                msg = f"*Found*\\!\n```json\n{candidate_str}\n```"
                 telegram.send_message(msg)
                 # TODO: Add way for user to validate the candidate before booking
                 # resp = api.book_session(candidates[0], beneficiaries, reqs)
