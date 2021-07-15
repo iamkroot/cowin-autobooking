@@ -1,0 +1,6 @@
+__pycache__
+.vscode
+config.toml
+*.log
+api_token.txt
+playground.ipynb

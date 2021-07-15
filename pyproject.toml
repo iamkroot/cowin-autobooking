@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "cowin-autobook"
+version = "0.1.0"
+description = ""
+authors = ["iamkroot <kroot.patel@gmail.com>"]
+license = "GPL"
+readme = "README.md"
+packages = [{include = "cowin_autobook"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.26.0"
+Flask = "^2.0.1"
+Flask-Cors = "^3.0.10"
+gevent = "^21.1.2"
+toml = "^0.10.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
