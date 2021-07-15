@@ -1,0 +1,21 @@
+[auth]
+mobile = "9876543210"
+secret = "U2FsdGVkX1   LOTS OF RANDOM CHARS HERE   =="  # secret should be 88 chars long
+
+[requirements]
+vaccine_type = "ANY"  # one of "ANY", "COVISHIELD", "COVAXIN", "SPUTNIK V"
+min_age = 18  # 18 or 45
+dose_seq = 2  # 1 or 2
+fee_type = "ANY"  # one of "ANY", "Free", "Paid"
+preferred_centers = []  # specify centre names, fuzzy matching is enabled, case sensitive 
+
+[booking]
+pincode = "100000"
+date = 2021-07-16  # appointment date
+
+[server]
+auth_key = "my_secret_password"  # any unique key. Needs to be sent to /cowinOtp endpoint in body. Eg: {"msgBody" : "Your CoWIN OTP is 123456...", "authKey": "my_secret_password"}
+
+[telegram]
+API_TOKEN = ""  # token for telegram bot. Only needed if you want notification when candidate is found
+allowed_users = []  # numeric user id to whom the message will be sent
