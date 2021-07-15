@@ -13,7 +13,7 @@ This is a Python application for automating the vaccine slot booking process on 
 #### 0. Secret token to enable third party usage of CoWIN API
 * To be able to actually generate the OTP using your mobile number, the app also needs to access the Protected APIs.
 * This needs a **secret token** which is to be obtained from the Govt. See [Registration and Setup Process for Accessing CO-WIN Protectedapis](https://apisetu.gov.in/document-central/cowin/Registration%20and%20Setup%20Process%20for%20Accessing%20CO-WIN%20Protectedapis.html)
-* Set this in `booking.secret` key of the config.
+* Set this in `auth.secret` key of the config.
 
 #### 1. Externally visible hostname
 * You will need a web server with valid domain name (running on something like an AWS/Azure/GCP/etc. VM instance).
