@@ -38,7 +38,7 @@ class CowinAuth:
         self.otp_queue = otp_queue
         if (
             self.TOKEN_PATH.exists()
-            and time.time() - self.TOKEN_PATH.stat().st_atime < 900
+            and time.time() - self.TOKEN_PATH.stat().st_mtime < 900
         ):
             # if token was saved within last 15 minutes, it might be valid
             logging.info("Reading saved token from file")
