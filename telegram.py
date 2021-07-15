@@ -1,4 +1,3 @@
-from logging import log
 import requests
 
 from __init__ import config, logging
