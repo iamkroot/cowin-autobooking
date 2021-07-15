@@ -47,11 +47,21 @@ class CowinAuth:
             logging.info("Reading saved token from file")
             self.token = self.TOKEN_PATH.read_text()
         else:
-            self.token = self._fetch_token()
+            self.token = self.refresh_token()
     
     def refresh_token(self):
-        # TODO: add rate limits
-        return self._fetch_token()
+        # TODO: add rate limits, measure timing, etc.
+        # right now we depend on timeout of otp_queue.get
+        logging.info("Refreshing token")
+        for _ in range(MAX_ERROR_RETRY):
+            try:
+                # FIXME: This can this also raise HTTPError
+                return self._fetch_token()
+            except OtpError as e:
+                logging.error(e)
+
+        logging.critical("Failed to get otp!")
+        raise OtpError
 
     def _fetch_token(self):
         logging.info("Fetching new token")    
@@ -104,7 +114,6 @@ def refresh_and_retry_on_error(fn):
     """Decorator for methods of CowinApi that calls refresh_token on auth error"""
     @wraps(fn)
     def func(self: "CowinApi", *args, **kwargs):
-        # TODO: Make this cleaner, handle nested errors better
         for i in range(MAX_ERROR_RETRY):
             try:
                 return fn(self, *args, **kwargs)
@@ -114,19 +123,7 @@ def refresh_and_retry_on_error(fn):
                     if i > 0:  # if it's not the first time
                         logging.info("Sleeping for a few seconds")
                         time.sleep(4 ** i)
-
-                    logging.info("Refreshing token")
-                    for _ in range(MAX_ERROR_RETRY):
-                        try:
-                            # FIXME: This can this also raise HTTPError
-                            self.refresh_token()
-                        except OtpError as e2:
-                            logging.error(f"{e2!s}")
-                        else:
-                            break  # no error, don't raise OtpError
-                    else:
-                        logging.critical("Failed to get otp!")
-                        raise OtpError
+                    self.refresh_token()
                 else:
                     # TODO: Handle other errors gracefully instead of crashing
                     raise e
