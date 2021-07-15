@@ -12,8 +12,8 @@ from typing import Literal, Optional
 
 import requests
 
-from __init__ import DEBUG, config, logging
-from server import otp_queue, run_app
+from __init__ import DEBUG, config, logging  # FIXME: Really ugly. Package it properly
+from server import otp_queue, run_app  # TODO: Don't let server create otp_queue
 import telegram
 
 SECRET = config["auth"]["secret"]
@@ -27,23 +27,15 @@ class OtpError(Exception):
         return "Failed to get otp from user"
 
 
-def get_otp():
-    """Gets otp from otp_queue"""
-    # TODO: Allow multiple methods to get_otp (eg: a telegram message)
-    # all that needs to be modified is giving the otp_queue to that module
-    try:
-        return otp_queue.get(timeout=180)
-    except queue.Empty:
-        raise OtpError
-
-
 class CowinAuth:
     TOKEN_PATH = Path("api_token.txt")
     OTP_GENERATE_URL = BASE_URL + "/auth/generateMobileOTP"
     OTP_VALIDATE_URL = BASE_URL + "/auth/validateMobileOtp"  # seriously bro, wtf?
 
-    def __init__(self, mobile: str):
+    def __init__(self, mobile: str, otp_queue: queue.Queue[str]):
         self.mobile = mobile
+        # Modules should insert otp from user into this queue
+        self.otp_queue = otp_queue
         if (
             self.TOKEN_PATH.exists()
             and time.time() - self.TOKEN_PATH.stat().st_atime < 900
@@ -71,7 +63,14 @@ class CowinAuth:
     def _fetch_token(self):
         logging.info("Fetching new token")    
         otp_data = self.generate_otp(self.mobile)
-        otp = get_otp()
+        try:
+            # we don't care how the user entered the otp, just that we get it here
+            # currently, this otp is inserted into this queue by the server
+            # TODO: Allow other methods to get otp from user (eg: Telegram API)
+            otp = self.otp_queue.get(timeout=180)
+        except queue.Empty:
+            raise OtpError
+
         self.token = self.validate_otp(otp, otp_data["txnId"])["token"]
         self.TOKEN_PATH.write_text(self.token)
         return self.token
@@ -243,7 +242,7 @@ def get_booking_date() -> str:
 
 def booking_loop():
     reqs = Requirements(**config["requirements"])
-    auth = CowinAuth(config["auth"]["mobile"])
+    auth = CowinAuth(config["auth"]["mobile"], otp_queue)
     api = CowinApi(auth)
     pincode = config["booking"]["pincode"]
     book_date = get_booking_date()
