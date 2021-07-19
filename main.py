@@ -151,7 +151,7 @@ class CowinApi:
         self.auth = auth
         if auth is None:
             self.SESSIONS_BY_PIN_URL = self.SESSIONS_BY_PIN_URL.replace(
-                "/sessions", "/public/sessions")
+                "/sessions", "/sessions/public")
         else:
             self.sess.headers.update(self.header)
 
@@ -247,12 +247,14 @@ def get_booking_date() -> str:
 
 def booking_loop():
     reqs = Requirements(**config["requirements"])
-    auth = CowinAuth(config["auth"]["mobile"], otp_queue)
+    if mobile := config.get("auth", {}).get("mobile"):
+        auth = CowinAuth(mobile, otp_queue)
+    else:
+        auth = None
     api = CowinApi(auth)
     pincode = config["booking"]["pincode"]
     book_date = get_booking_date()
     # TODO: Allow user to select subset of beneficiaries
-    beneficiaries = api.get_beneficiaries()
     while True:
         sess_data = api.get_sessions_by_pincode(pincode, book_date)
         if sessions := sess_data["sessions"]:
@@ -264,6 +266,7 @@ def booking_loop():
                 msg = f"*Found*\\!\n```json\n{candidate_str}\n```"
                 telegram.send_message(msg)
                 # TODO: Add way for user to validate the candidate before booking
+                # beneficiaries = api.get_beneficiaries()
                 # resp = api.book_session(candidates[0], beneficiaries, reqs)
                 # logging.info("booking successful")
                 # logging.debug(resp)
