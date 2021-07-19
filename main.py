@@ -98,6 +98,7 @@ class CowinAuth:
 class Requirements:
     vaccine_type: Literal["ANY", "COVISHIELD", "COVAXIN", "SPUTNIK V"] = "ANY"
     min_age: Literal[18, 45] = 18
+    max_age: Optional[Literal[44]] = None
     dose_seq: Literal[1, 2] = 1
     fee_type: Literal["ANY", "Free", "Paid"] = "ANY"
     preferred_centers: tuple[str, ...] = tuple()
@@ -203,7 +204,10 @@ def filter_session(reqs: Requirements, session: dict):
         return False
     if reqs.vaccine_type != "ANY" and session["vaccine"] != reqs.vaccine_type:
         return False
+    # TODO: Is this age range checking logic correct? 
     if reqs.min_age < session["min_age_limit"]:
+        return False
+    if reqs.min_age > session["max_age_limit"]:
         return False
     if session[f"available_capacity_dose{reqs.dose_seq}"] < 1:
         return False
